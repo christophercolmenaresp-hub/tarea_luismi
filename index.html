@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nexus - Plataforma Híbrida</title>
+
+    <!-- Font: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
+                    },
+                    colors: {
+                        slate: {
+                            850: '#151f32',
+                            900: '#0f172a',
+                            950: '#020617',
+                        },
+                        primary: '#3b82f6', // blue-500
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Import Map for ES Modules -->
+    <script type="importmap">
+    {
+      "imports": {
+        "react": "https://esm.sh/react@18.2.0",
+        "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+        "lucide-react": "https://esm.sh/lucide-react@0.330.0"
+      }
+    }
+  </script>
+
+    <!-- Babel Standalone -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        body {
+            background-color: #020617;
+            /* slate-950 */
+            color: #f8fafc;
+            overflow-y: scroll;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+
+        /* Glassmorphism Classes */
+        .glass {
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-card {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: border-color 0.2s, transform 0.2s;
+        }
+
+        .glass-card:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .glass-nav {
+            background: rgba(2, 6, 23, 0.8);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+    </style>
+</head>
+
+<body class="antialiased min-h-screen flex flex-col">
+    <div id="root" class="flex-grow flex flex-col h-screen overflow-hidden"></div>
+
+    <!-- React Application Source -->
+    <script type="text/babel" data-type="module">
+        import React, { useState } from 'react';
+        import { createRoot } from 'react-dom/client';
+        import {
+            Home, Compass, Users, Hash, MessageSquare,
+            ChevronUp, ChevronDown, CheckCircle, Search,
+            Bell, Plus, Image as ImageIcon, Flame, Star,
+            Share, MoreHorizontal, Terminal, ShieldCheck, Zap
+        } from 'lucide-react';
+
+        // Helper component for HelpCircle because lucide doesn't export HelpCircle directly in this old version perhaps, using a custom SVG wrapper
+        const HelpCircleComponent = ({ size, className }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+        );
+
+        // --- MOCK DATA ---
+        const INITIAL_POSTS = [
+            {
+                id: 1,
+                type: 'Noticia',
+                author: { name: 'Tech Insider', handle: '@techinsider', avatar: 'https://i.pravatar.cc/150?u=tech', rep: 12400 },
+                time: '2h',
+                title: 'OpenAI anuncia un nuevo modelo de IA capaz de razonar en tiempo real.',
+                content: 'El nuevo modelo promete reducir las alucinaciones en un 80% y será liberado a desarrolladores la próxima semana. ¿Será el fin de los programadores junior?',
+                code: null,
+                votes: 1245,
+                comments: 342,
+                status: null, // Only for Duda
+                bestAnswer: null,
+                tags: ['#AI', '#TechNews']
+            },
+            {
+                id: 2,
+                type: 'Duda',
+                author: { name: 'Luis Coder', handle: '@luis_dev', avatar: 'https://i.pravatar.cc/150?u=luis', rep: 342 },
+                time: '5h',
+                title: '¿Por qué mi useEffect se ejecuta dos veces en React 18?',
+                content: 'Estoy construyendo un clon de Twitter y noté que cada vez que monto el componente de la tarjeta, el useEffect hace la llamada a la API dos veces seguidas. ¿Alguien sabe cómo evitar esto?',
+                code: `useEffect(() => {\n  fetchData();\n}, []);`,
+                votes: 89,
+                comments: 12,
+                status: 'Abierto',
+                bestAnswer: null,
+                tags: ['#React', '#Frontend', '#Bug']
+            },
+            {
+                id: 3,
+                type: 'Debate',
+                author: { name: 'María Edu', handle: '@maria_teacher', avatar: 'https://i.pravatar.cc/150?u=maria', rep: 5120 },
+                time: '1d',
+                title: 'El uso de móviles en las aulas: ¿Prohibición total o integración controlada?',
+                content: 'Ante las nuevas regulaciones europeas, muchos colegios están optando por confiscar los teléfonos en la entrada. He notado que cuando los integramos en dinámicas como Kahoot, los alumnos rinden mejor. ¿Qué opinan?',
+                code: null,
+                votes: 560,
+                comments: 145,
+                status: null,
+                bestAnswer: null,
+                tags: ['#Educación', '#DebateEscolar']
+            },
+            {
+                id: 4,
+                type: 'Duda',
+                author: { name: 'Carlos Backender', handle: '@carlos_db', avatar: 'https://i.pravatar.cc/150?u=carlos', rep: 890 },
+                time: '2d',
+                title: 'Error de CORS al conectar mi app Node.js con el frontend en Vercel',
+                content: 'He configurado el middleware cors() en Express, pero sigo recibiendo "No Access-Control-Allow-Origin" cuando mi app React (alojada en Vercel) hace un POST. ¡Ayuda por favor!',
+                code: `app.use(cors({\n  origin: '*',\n  methods: ['GET', 'POST']\n}));`,
+                votes: 312,
+                comments: 4,
+                status: 'Resuelto',
+                bestAnswer: {
+                    author: { name: 'Ana SecOps', handle: '@ana_sec', avatar: 'https://i.pravatar.cc/150?u=ana', rep: 4020 },
+                    content: 'El problema probablemente es que Vercel está enviando una petición preflight (OPTIONS) y tu servidor no la está manejando correctamente si tienes configuraciones de red específicas. Además, nunca uses "*" en producción. Define el origin exacto de tu frontend en Vercel.'
+                },
+                tags: ['#NodeJS', '#CORS', '#Backend']
+            },
+            {
+                id: 5,
+                type: 'Noticia',
+                author: { name: 'Gaming Nexus', handle: '@gaming_nx', avatar: 'https://i.pravatar.cc/150?u=gaming', rep: 8890 },
+                time: '3d',
+                title: 'GTA VI: Se filtran nuevas mecánicas de interacción con NPCs',
+                content: 'Un insider asegura que los NPCs tendrán memoria a corto plazo, recordando interacciones previas con el protagonista incluso días después en el juego. Revolucionario.',
+                code: null,
+                votes: 8900,
+                comments: 1024,
+                status: null,
+                bestAnswer: null,
+                tags: ['#Gaming', '#GTAVI', '#Leak']
+            }
+        ];
+
+        const TRENDING_TAGS = [
+            { name: '#React19', posts: '45.2k' },
+            { name: '#OpenAI', posts: '32.1k' },
+            { name: '#FrontendDev', posts: '28.9k' },
+            { name: '#JavaScript', posts: '21.4k' },
+            { name: '#WebDesign', posts: '15.8k' },
+        ];
+
+        const TOP_USERS = [
+            { name: 'Sophie Coder', handle: '@sophie_ui', avatar: 'https://i.pravatar.cc/150?u=sophie', rep: 45200 },
+            { name: 'Dev Master', handle: '@dev_guru', avatar: 'https://i.pravatar.cc/150?u=guru', rep: 38100 },
+            { name: 'Alex Frontend', handle: '@alex_css', avatar: 'https://i.pravatar.cc/150?u=alex', rep: 29400 },
+        ];
+
+        // --- COMPONENTS ---
+
+        const Badge = ({ type }) => {
+            const config = {
+                'Noticia': { color: 'text-blue-400', bg: 'bg-blue-500/10', border: 'border-blue-500/20', icon: <Zap size={14} className="mr-1" /> },
+                'Debate': { color: 'text-green-400', bg: 'bg-green-500/10', border: 'border-green-500/20', icon: <MessageSquare size={14} className="mr-1" /> },
+                'Duda': { color: 'text-orange-400', bg: 'bg-orange-500/10', border: 'border-orange-500/20', icon: <HelpCircleComponent size={14} className="mr-1" /> },
+            };
+
+            const style = config[type] || config['Noticia'];
+
+            return (
+                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${style.bg} ${style.color} ${style.border}`}>
+                    {style.icon}
+                    {type}
+                </span>
+            );
+        };
+
+        const StatusBadge = ({ status }) => {
+            if (!status) return null;
+            const isResolved = status === 'Resuelto';
+            return (
+                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${isResolved ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' : 'bg-amber-500/10 text-amber-400 border-amber-500/30'}`}>
+                    {isResolved ? <CheckCircle size={14} className="mr-1" /> : <ShieldCheck size={14} className="mr-1" />}
+                    {status}
+                </span>
+            );
+        };
+
+        const PostCard = ({ post }) => {
+            const [votes, setVotes] = useState(post.votes);
+            const [voteState, setVoteState] = useState(0); // 1 = up, -1 = down, 0 = none
+
+            const handleUpvote = () => {
+                if (voteState === 1) { setVotes(votes - 1); setVoteState(0); }
+                else if (voteState === -1) { setVotes(votes + 2); setVoteState(1); }
+                else { setVotes(votes + 1); setVoteState(1); }
+            };
+
+            const handleDownvote = () => {
+                if (voteState === -1) { setVotes(votes + 1); setVoteState(0); }
+                else if (voteState === 1) { setVotes(votes - 2); setVoteState(-1); }
+                else { setVotes(votes - 1); setVoteState(-1); }
+            };
+
+            const isResolved = post.status === 'Resuelto';
+
+            return (
+                <div className={`glass-card p-4 rounded-xl mb-4 flex gap-4 ${isResolved ? 'border-emerald-500/30 ring-1 ring-emerald-500/20' : ''}`}>
+                    {/* Voting Sidebar (Reddit style) */}
+                    <div className="flex flex-col items-center gap-1 min-w-[40px]">
+                        <button onClick={handleUpvote} className={`p-1 rounded hover:bg-slate-800 transition-colors ${voteState === 1 ? 'text-orange-500' : 'text-slate-400'}`}>
+                            <ChevronUp size={24} />
+                        </button>
+                        <span className={`font-semibold text-sm ${voteState === 1 ? 'text-orange-500' : voteState === -1 ? 'text-blue-500' : 'text-slate-300'}`}>
+                            {votes >= 1000 ? (votes / 1000).toFixed(1) + 'k' : votes}
+                        </span>
+                        <button onClick={handleDownvote} className={`p-1 rounded hover:bg-slate-800 transition-colors ${voteState === -1 ? 'text-blue-500' : 'text-slate-400'}`}>
+                            <ChevronDown size={24} />
+                        </button>
+                    </div>
+
+                    {/* Main Content */}
+                    <div className="flex-1 min-w-0">
+                        {/* Header */}
+                        <div className="flex items-center justify-between mb-2">
+                            <div className="flex items-center gap-2 truncate">
+                                <img src={post.author.avatar} alt="Avatar" className="w-8 h-8 rounded-full border border-slate-700" />
+                                <span className="font-bold text-slate-100 hover:underline cursor-pointer truncate">{post.author.name}</span>
+                                <span className="text-slate-400 text-sm hidden sm:inline">{post.author.handle}</span>
+
+                                {/* Rep points visual gamification */}
+                                <span className="hidden sm:flex items-center text-xs font-semibold px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-300 border border-indigo-500/20" title="Reputación">
+                                    <Flame size={12} className="mr-1 text-orange-400" />
+                                    {post.author.rep > 1000 ? (post.author.rep / 1000).toFixed(1) + 'k' : post.author.rep}
+                                </span>
+
+                                <span className="text-slate-500 text-sm">· {post.time}</span>
+                            </div>
+
+                            <div className="flex items-center gap-2 flex-shrink-0 ml-2">
+                                <Badge type={post.type} />
+                                {post.status && <StatusBadge status={post.status} />}
+                            </div>
+                        </div>
+
+                        {/* Title & Content */}
+                        <h3 className="text-lg font-semibold text-white mb-2 leading-snug">{post.title}</h3>
+                        <p className="text-slate-300 mb-3 text-sm leading-relaxed">{post.content}</p>
+
+                        {/* Code Block (if Duda/Tech) */}
+                        {post.code && (
+                            <div className="mb-4 bg-[#0d1117] rounded-lg border border-slate-800 overflow-hidden text-sm font-mono">
+                                <div className="flex items-center px-4 py-2 bg-slate-800/50 border-b border-slate-800 text-xs text-slate-400">
+                                    <Terminal size={14} className="mr-2" /> Code Snippet
+                                </div>
+                                <pre className="p-4 text-emerald-300 overflow-x-auto">
+                                    <code>{post.code}</code>
+                                </pre>
+                            </div>
+                        )}
+
+                        {/* Best Answer (StackOverflow style highlight) */}
+                        {post.bestAnswer && (
+                            <div className="mb-4 bg-emerald-900/10 border border-emerald-500/20 rounded-lg p-4 relative">
+                                <div className="absolute top-4 right-4 text-emerald-500 opacity-20">
+                                    <CheckCircle size={48} />
+                                </div>
+                                <h4 className="flex items-center font-semibold text-emerald-400 text-sm mb-2">
+                                    <CheckCircle size={16} className="mr-2" /> Mejor Respuesta
+                                </h4>
+                                <div className="flex items-center gap-2 mb-2">
+                                    <img src={post.bestAnswer.author.avatar} className="w-5 h-5 rounded-full" />
+                                    <span className="text-sm font-medium text-slate-200">{post.bestAnswer.author.name}</span>
+                                    <span className="text-xs text-indigo-300 font-semibold px-1.5 py-0.5 rounded bg-indigo-500/10">
+                                        {post.bestAnswer.author.rep > 1000 ? (post.bestAnswer.author.rep / 1000).toFixed(1) + 'k' : post.bestAnswer.author.rep} rep
+                                    </span>
+                                </div>
+                                <p className="text-sm text-slate-300 relative z-10">{post.bestAnswer.content}</p>
+                            </div>
+                        )}
+
+                        {/* Tags */}
+                        <div className="flex flex-wrap gap-2 mb-3">
+                            {post.tags.map(tag => (
+                                <span key={tag} className="text-xs font-medium text-blue-400 hover:text-blue-300 cursor-pointer">
+                                    {tag}
+                                </span>
+                            ))}
+                        </div>
+
+                        {/* Footer Actions (Twitter style) */}
+                        <div className="flex items-center text-slate-400 gap-6 mt-2 pt-2 border-t border-slate-800/50">
+                            <button className="flex items-center gap-2 hover:text-blue-400 transition-colors group">
+                                <div className="p-2 rounded-full group-hover:bg-blue-500/10 transition-colors">
+                                    <MessageSquare size={18} />
+                                </div>
+                                <span className="text-sm font-medium">{post.comments}</span>
+                            </button>
+                            <button className="flex items-center gap-2 hover:text-green-400 transition-colors group">
+                                <div className="p-2 rounded-full group-hover:bg-green-500/10 transition-colors">
+                                    <Share size={18} />
+                                </div>
+                                <span className="text-sm font-medium">Compartir</span>
+                            </button>
+                            <button className="p-2 rounded-full hover:bg-slate-800 hover:text-white transition-colors ml-auto">
+                                <MoreHorizontal size={18} />
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        const App = () => {
+            const [activeTab, setActiveTab] = useState('novedades');
+
+            const filterPosts = () => {
+                if (activeTab === 'populares') return [...INITIAL_POSTS].sort((a, b) => b.votes - a.votes);
+                if (activeTab === 'sin_resolver') return INITIAL_POSTS.filter(p => p.status === 'Abierto');
+                return INITIAL_POSTS; // novedades (chrono)
+            };
+
+            return (
+                <div className="flex h-full w-full max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 gap-6 overflow-hidden">
+
+                    {/* LEFT SIDEBAR (Navegación / Reddit Style) */}
+                    <aside className="hidden lg:flex flex-col w-64 flex-shrink-0 h-full">
+                        <div className="glass p-4 rounded-2xl h-full flex flex-col">
+                            <div className="flex items-center gap-3 px-2 mb-8">
+                                <div className="bg-gradient-to-tr from-blue-500 to-indigo-500 p-2 rounded-xl shadow-lg shadow-blue-500/20">
+                                    <Home size={24} className="text-white" />
+                                </div>
+                                <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400 tracking-tight">
+                                    Nexus
+                                </span>
+                            </div>
+
+                            <button className="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 px-4 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20 transition-all active:scale-95 mb-8">
+                                <Plus size={20} />
+                                Nuevo Post
+                            </button>
+
+                            <div className="flex-1 overflow-y-auto pr-2">
+                                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3 px-2">Navegación</h3>
+                                <nav className="space-y-1 mb-8">
+                                    <a href="#" className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-blue-500/10 text-blue-400 font-medium border border-blue-500/20">
+                                        <Home size={20} /> Inicio
+                                    </a>
+                                    <a href="#" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800/50 hover:text-white transition-colors">
+                                        <Compass size={20} /> Explorar
+                                    </a>
+                                    <a href="#" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800/50 hover:text-white transition-colors relative">
+                                        <Bell size={20} /> Notificaciones
+                                        <span className="absolute top-2.5 right-3 w-2 h-2 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.8)]"></span>
+                                    </a>
+                                </nav>
+
+                                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3 px-2">Comunidades</h3>
+                                <div className="space-y-1">
+                                    {['Tech & Dev', 'Noticias IT', 'Dudas & Stack', 'Gaming', 'Memes'].map((comm) => (
+                                        <a href="#" key={comm} className="flex items-center justify-between px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800/50 hover:text-white transition-colors group">
+                                            <div className="flex items-center gap-3 truncate">
+                                                <Users size={18} className="text-indigo-400 group-hover:text-indigo-300 transition-colors flex-shrink-0" />
+                                                <span className="truncate">{comm}</span>
+                                            </div>
+                                        </a>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="mt-auto pt-4 border-t border-slate-800 px-2 pb-2">
+                                <div className="flex items-center gap-3 cursor-pointer p-2 rounded-xl hover:bg-slate-800/50 transition-colors">
+                                    <img src="https://i.pravatar.cc/150?u=myuser" className="w-10 h-10 rounded-full border border-slate-600" />
+                                    <div className="flex-1 min-w-0">
+                                        <p className="text-sm font-semibold text-white truncate">Tú (Demo)</p>
+                                        <p className="text-xs text-slate-400 truncate">@demo_user</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </aside>
+
+                    {/* CENTRAL COLUMN (El Feed Híbrido) */}
+                    <main className="flex-1 flex flex-col min-w-0 h-full relative">
+
+                        {/* Header Tabs */}
+                        <header className="glass-nav sticky top-0 z-10 rounded-t-2xl px-4 py-3 mb-4 shadow-md hidden sm:block">
+                            <div className="flex w-full overflow-x-auto hide-scrollbar gap-2 pb-1">
+                                <button
+                                    onClick={() => setActiveTab('novedades')}
+                                    className={`flex items-center gap-2 whitespace-nowrap px-4 py-2 rounded-xl font-medium transition-colors ${activeTab === 'novedades' ? 'bg-slate-800 text-white shadow-inner border border-slate-700' : 'text-slate-400 hover:text-white hover:bg-slate-800/50'}`}
+                                >
+                                    <Flame size={18} className={activeTab === 'novedades' ? 'text-blue-400' : ''} />
+                                    Novedades
+                                </button>
+                                <button
+                                    onClick={() => setActiveTab('populares')}
+                                    className={`flex items-center gap-2 whitespace-nowrap px-4 py-2 rounded-xl font-medium transition-colors ${activeTab === 'populares' ? 'bg-slate-800 text-white shadow-inner border border-slate-700' : 'text-slate-400 hover:text-white hover:bg-slate-800/50'}`}
+                                >
+                                    <Star size={18} className={activeTab === 'populares' ? 'text-yellow-400' : ''} />
+                                    Populares
+                                </button>
+                                <button
+                                    onClick={() => setActiveTab('sin_resolver')}
+                                    className={`flex items-center gap-2 whitespace-nowrap px-4 py-2 rounded-xl font-medium transition-colors ${activeTab === 'sin_resolver' ? 'bg-slate-800 text-white shadow-inner border border-slate-700' : 'text-slate-400 hover:text-white hover:bg-slate-800/50'}`}
+                                >
+                                    <HelpCircleComponent size={18} className={activeTab === 'sin_resolver' ? 'text-orange-400' : ''} />
+                                    Sin Resolver
+                                </button>
+                            </div>
+                        </header>
+
+                        {/* Mobile Top Bar */}
+                        <header className="sm:hidden glass-nav sticky top-0 z-10 px-4 py-3 mb-4 rounded-xl shadow-md flex justify-between items-center">
+                            <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400 tracking-tight">Nexus</span>
+                            <div className="flex gap-4">
+                                <Search size={20} className="text-slate-400" />
+                                <Bell size={20} className="text-slate-400" />
+                            </div>
+                        </header>
+
+                        <div className="sm:hidden flex overflow-x-auto gap-2 mb-4 px-2 pb-2">
+                            <button onClick={() => setActiveTab('novedades')} className={`px-4 py-1.5 rounded-full text-sm font-medium ${activeTab === 'novedades' ? 'bg-blue-600 text-white' : 'glass-card text-slate-300'}`}>Novedades</button>
+                            <button onClick={() => setActiveTab('populares')} className={`px-4 py-1.5 rounded-full text-sm font-medium ${activeTab === 'populares' ? 'bg-yellow-600/90 text-white' : 'glass-card text-slate-300'}`}>Populares</button>
+                            <button onClick={() => setActiveTab('sin_resolver')} className={`px-4 py-1.5 whitespace-nowrap rounded-full text-sm font-medium ${activeTab === 'sin_resolver' ? 'bg-orange-600/90 text-white' : 'glass-card text-slate-300'}`}>Sin Resolver</button>
+                        </div>
+
+                        {/* Compose Input (Twitter style) */}
+                        <div className="glass-card p-4 rounded-xl mb-6 shadow-sm hidden sm:block">
+                            <div className="flex gap-4">
+                                <img src="https://i.pravatar.cc/150?u=myuser" className="w-10 h-10 rounded-full flex-shrink-0 border border-slate-700" />
+                                <div className="flex-1">
+                                    <textarea
+                                        placeholder="¿Qué quieres compartir, preguntar o debatir?"
+                                        className="w-full bg-slate-900/50 border border-slate-700/50 rounded-xl p-3 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all resize-none h-20"
+                                    ></textarea>
+                                    <div className="flex items-center justify-between mt-3">
+                                        <div className="flex items-center gap-2 text-slate-400">
+                                            <button className="p-2 hover:bg-slate-800 rounded-full transition-colors text-blue-400 hover:text-blue-300"><ImageIcon size={20} /></button>
+                                            <button className="p-2 hover:bg-slate-800 rounded-full transition-colors text-emerald-400 hover:text-emerald-300"><Terminal size={20} /></button>
+                                            <button className="p-2 hover:bg-slate-800 rounded-full transition-colors"><Hash size={20} /></button>
+                                        </div>
+                                        <button className="bg-blue-600 hover:bg-blue-500 text-white font-medium py-1.5 px-6 rounded-full transition-colors text-sm">
+                                            Publicar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Feed List */}
+                        <div className="flex-1 overflow-y-auto pb-20 sm:pb-4 hide-scrollbar">
+                            {filterPosts().map(post => <PostCard key={post.id} post={post} />)}
+
+                            {filterPosts().length === 0 && (
+                                <div className="text-center p-8 text-slate-400 glass-card rounded-xl">
+                                    <p>No hay publicaciones en esta pestaña.</p>
+                                </div>
+                            )}
+                        </div>
+
+                    </main>
+
+                    {/* RIGHT SIDEBAR (Tendencias / Gamificación) */}
+                    <aside className="hidden xl:flex flex-col w-72 flex-shrink-0 h-full overflow-y-auto hide-scrollbar gap-4">
+
+                        {/* Search Bar */}
+                        <div className="glass rounded-xl p-2 sticky top-0 z-10 hidden xl:block mb-2">
+                            <div className="relative">
+                                <Search size={18} className="absolute left-3 top-2.5 text-slate-500" />
+                                <input type="text" placeholder="Buscar en Nexus..." className="w-full bg-slate-900/60 border border-slate-700/50 rounded-lg py-2 pl-10 pr-4 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all" />
+                            </div>
+                        </div>
+
+                        <div className="glass p-5 rounded-2xl mb-4">
+                            <h3 className="font-bold text-lg text-white mb-4 flex items-center gap-2">
+                                <Flame size={20} className="text-orange-500" /> Tendencias
+                            </h3>
+                            <div className="space-y-4">
+                                {TRENDING_TAGS.map((tag, i) => (
+                                    <div key={i} className="flex justify-between items-center cursor-pointer group">
+                                        <div>
+                                            <p className="text-slate-300 font-medium group-hover:text-blue-400 transition-colors">{tag.name}</p>
+                                            <p className="text-xs text-slate-500">Tendencia mundial</p>
+                                        </div>
+                                        <span className="text-xs font-semibold text-slate-400">{tag.posts}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="glass p-5 rounded-2xl">
+                            <h3 className="font-bold text-lg text-white mb-4 flex items-center gap-2">
+                                <Star size={20} className="text-yellow-500" /> Usuarios Destacados
+                            </h3>
+                            <div className="space-y-5">
+                                {TOP_USERS.map((user, i) => (
+                                    <div key={i} className="flex items-center gap-3">
+                                        <div className="relative">
+                                            <img src={user.avatar} className="w-10 h-10 rounded-full border-2 border-slate-700" />
+                                            {i === 0 && <span className="absolute -top-1 -right-1 flex h-4 w-4 rounded-full bg-yellow-500 items-center justify-center text-[10px] text-yellow-950 font-bold border border-yellow-200 shadow-sm animate-pulse" title="Top 1">1</span>}
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <p className="text-sm font-semibold text-slate-200 truncate hover:underline cursor-pointer">{user.name}</p>
+                                            <p className="text-xs text-slate-400 truncate">{user.handle}</p>
+                                        </div>
+                                        <div className="flex flex-col items-end">
+                                            <span className="text-xs font-bold text-indigo-400 px-2 py-0.5 rounded bg-indigo-500/10 border border-indigo-500/20">
+                                                {user.rep >= 1000 ? (user.rep / 1000).toFixed(1) + 'k' : user.rep}
+                                            </span>
+                                            <span className="text-[10px] text-slate-500 mt-0.5">Rep</span>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="mt-4 text-xs text-slate-500 px-4 pb-4">
+                            &copy; 2026 Nexus Prototype. <br className="mb-1" /> Fusión híbrida de redes.
+                            <div className="mt-2 pt-2 border-t border-slate-800">
+                                <button onClick={() => window.location.reload()} className="text-indigo-400 hover:underline flex items-center gap-1">
+                                    <Zap size={12} /> Reiniciar Modo Demo
+                                </button>
+                            </div>
+                        </div>
+                    </aside>
+
+                </div>
+            );
+        };
+
+        const rootElement = document.getElementById('root');
+        const root = createRoot(rootElement);
+        root.render(<App />);
+
+    </script>
+</body>
+
+</html>
