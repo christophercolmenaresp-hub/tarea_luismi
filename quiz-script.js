@@ -77,7 +77,7 @@ class MotorQuiz {
         // Estructura principal
         const html = `
             <div class="contenedor-quiz">
-                <button class="boton-volver" onclick="window.location.href='index.html'">
+                <button class="boton-volver" onclick="window.location.href='quiz.html'">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
                     Volver al inicio
                 </button>
@@ -190,7 +190,7 @@ class MotorQuiz {
                 <div style="font-size: 5rem; font-weight: 900; color: var(--color-azul-brillante); margin-bottom: 4rem;">
                     ${this.puntuacion} <span style="font-size: 1.5rem; color: var(--color-slate-500);">PTS</span>
                 </div>
-                <button class="boton-principal" onclick="window.location.href='index.html'">Volver al Inicio</button>
+                <button class="boton-principal" onclick="window.location.href='quiz.html'">Volver al Inicio</button>
             </div>
         `;
     }
