@@ -267,7 +267,7 @@ header p {
     background: #f1f5f9;
 }
 
-/* Responsive Design */
+/* Responsive Design - Forced no-scroll */
 @media (max-width: 1400px) {
     .promo-grid {
         grid-template-columns: repeat(4, 1fr);
@@ -283,15 +283,30 @@ header p {
 
 @media (max-width: 768px) {
     header h1 {
-        font-size: 2.2rem;
+        font-size: 1.5rem;
+    }
+
+    header p {
+        display: none;
     }
 
     .promo-grid {
-        grid-template-columns: 1fr;
-        padding: 1.5rem;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+        padding: 0.5rem;
     }
 
     .ad-card {
-        height: 400px;
+        min-height: 120px;
+    }
+
+    .ad-content p {
+        display: none;
+    }
+
+    .btn-action {
+        padding: 0.2rem 0.5rem;
+        font-size: 0.7rem;
+        margin-top: 0.25rem;
     }
 }
