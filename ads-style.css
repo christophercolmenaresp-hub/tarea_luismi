@@ -14,32 +14,10 @@
 
 html, body {
     height: 100% !important;
-    height: 100vh !important;
+    width: 100% !important;
     overflow: hidden !important;
     margin: 0;
     padding: 0;
-}
-
-.btn-back {
-    position: absolute;
-    top: 2rem;
-    left: 2rem;
-    color: var(--color-text-dim);
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 0.9rem;
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--color-border);
-    transition: all 0.2s;
-    z-index: 100;
-}
-
-.btn-back:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-    transform: translateX(-5px);
 }
 
 body {
@@ -50,16 +28,55 @@ body {
     flex-direction: column;
 }
 
+.btn-back {
+    position: absolute;
+    top: 1.5rem;
+    left: 1.5rem;
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.8rem;
+    padding: 0.4rem 0.8rem;
+    border-radius: 0.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.2s;
+    z-index: 100;
+}
+
+.btn-back:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(-5px);
+}
+
+header {
+    text-align: center;
+    padding: 1rem 0;
+    flex-shrink: 0;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    font-weight: 900;
+    margin: 0;
+}
+
+header p {
+    color: #94a3b8;
+    font-size: 1rem;
+    margin: 0.2rem 0 0;
+}
+
 .promo-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    justify-content: center;
-    gap: 1rem;
-    padding: 0 1.5rem;
+    gap: 1.5rem;
+    padding: 1rem 2rem;
+    width: 100%;
     max-width: 1600px;
     margin: 0 auto;
     flex: 1;
-    min-height: 0; /* Allow grid to shrink */
+    min-height: 0;
 }
 
 .ad-card {
@@ -67,11 +84,15 @@ body {
     border-radius: 1.5rem;
     overflow: hidden;
     height: 100%;
-    min-height: 300px;
     background: var(--color-surface-ads);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s;
+    transition: transform 0.4s ease, box-shadow 0.4s;
     cursor: pointer;
+}
+
+.ad-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
 .ad-image {
@@ -80,17 +101,12 @@ body {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    opacity: 0.6;
-    transition: opacity 0.4s, transform 0.4s;
+    opacity: 0.5;
+    transition: opacity 0.4s;
 }
 
 .ad-card:hover .ad-image {
-    opacity: 0.8;
-    transform: scale(1.1);
-}
-
-.ad-card:hover {
-    transform: translateY(-10px) scale(1.02);
+    opacity: 0.7;
 }
 
 .ad-content {
@@ -99,214 +115,55 @@ body {
     left: 0;
     right: 0;
     padding: 1.5rem;
-    background: linear-gradient(transparent, rgba(0, 0, 0, 0.95) 40%);
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.9) 50%);
     z-index: 2;
 }
 
-.ad-badge {
-    position: absolute;
-    top: 1.5rem;
-    right: 1.5rem;
-    padding: 0.4rem 1rem;
-    border-radius: 2rem;
-    font-size: 0.75rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.05rem;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(5px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    z-index: 10;
+.ad-content h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
 }
 
-/* Specific Ad Styles */
-
-/* 1. Escape Luismi - Horror style */
-.ad-horror {
-    background: radial-gradient(circle at center, #2b0000, #000);
-}
-
-.ad-horror:hover {
-    box-shadow: 0 0 40px rgba(153, 27, 27, 0.4);
-    border-color: var(--color-horror);
-}
-
-.ad-horror h2 {
-    color: #fecaca;
-    text-shadow: 0 0 10px rgba(153, 27, 27, 0.8);
-}
-
-.ad-horror .pulse {
-    animation: blood-pulse 2s infinite;
-}
-
-@keyframes blood-pulse {
-    0% {
-        transform: scale(1);
-        opacity: 0.6;
-    }
-
-    50% {
-        transform: scale(1.2);
-        opacity: 0.2;
-    }
-
-    100% {
-        transform: scale(1);
-        opacity: 0.6;
-    }
-}
-
-/* 2. Cyber Olympics - Cyberpunk style */
-.ad-cyber {
-    background: radial-gradient(circle at center, #001f3f, #020617);
-}
-
-.ad-cyber:hover {
-    box-shadow: 0 0 40px rgba(14, 165, 233, 0.4);
-    border-color: var(--color-cyber);
-}
-
-.ad-cyber h2 {
-    color: #e0f2fe;
-}
-
-.neon-border {
-    position: absolute;
-    inset: 0;
-    border: 2px solid transparent;
-    transition: border-color 0.3s;
-}
-
-.ad-cyber:hover .neon-border {
-    border-color: var(--color-cyber);
-    box-shadow: inset 0 0 20px var(--color-cyber);
-}
-
-/* 3. Casino Royale - Luxury style */
-.ad-luxury {
-    background: radial-gradient(circle at center, #1e1b1e, #000);
-}
-
-.ad-luxury:hover {
-    box-shadow: 0 0 40px rgba(251, 191, 36, 0.3);
-    border-color: var(--color-gold);
-}
-
-.ad-luxury h2 {
-    background: linear-gradient(135deg, #fbbf24, #d97706);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-/* 4. Error 404 - Glitch style */
-.ad-glitch {
-    background: #000;
-}
-
-.ad-glitch:hover {
-    box-shadow: 0 0 40px rgba(168, 85, 247, 0.4);
-    border-color: var(--color-glitch);
-}
-
-.glitch-text {
-    position: relative;
-}
-
-.ad-glitch:hover .glitch-text::before {
-    content: 'ERROR 404';
-    position: absolute;
-    left: 2px;
-    text-shadow: -2px 0 #ff00c1;
-    animation: glitch 0.3s infinite linear alternate-reverse;
-}
-
-@keyframes glitch {
-    0% {
-        clip-path: inset(10% 0 50% 0);
-    }
-
-    100% {
-        clip-path: inset(40% 0 10% 0);
-    }
-}
-
-/* Header */
-header {
-    text-align: center;
-    padding: 1.5rem 1rem;
-}
-
-header h1 {
-    font-size: 2.2rem;
-    font-weight: 900;
-    letter-spacing: -0.1rem;
-    margin-bottom: 0.25rem;
-}
-
-header p {
-    color: #94a3b8;
-    font-size: 1rem;
+.ad-content p {
+    font-size: 0.85rem;
+    color: #cbd5e1;
+    margin-bottom: 1rem;
+    line-height: 1.4;
 }
 
 .btn-action {
     display: inline-block;
-    margin-top: 1rem;
-    padding: 0.5rem 1.5rem;
-    border-radius: 0.75rem;
-    background: white;
-    color: black;
+    padding: 0.6rem 1.2rem;
+    border-radius: 0.6rem;
     font-weight: 700;
     text-decoration: none;
-    transition: 0.2s;
+    font-size: 0.85rem;
+    transition: all 0.2s;
 }
 
-.btn-action:hover {
-    transform: scale(1.05);
-    background: #f1f5f9;
+/* Specific Ad Styles */
+.ad-horror:hover { border-color: var(--color-horror); box-shadow: 0 0 30px rgba(153, 27, 27, 0.3); }
+.ad-cyber:hover { border-color: var(--color-cyber); box-shadow: 0 0 30px rgba(14, 165, 233, 0.3); }
+.ad-luxury:hover { border-color: var(--color-gold); box-shadow: 0 0 30px rgba(251, 191, 36, 0.2); }
+.ad-glitch:hover { border-color: var(--color-glitch); box-shadow: 0 0 30px rgba(168, 85, 247, 0.3); }
+
+footer {
+    text-align: center;
+    padding: 0.75rem 0;
+    opacity: 0.5;
+    font-size: 0.75rem;
+    flex-shrink: 0;
 }
 
-/* Responsive Design - Forced no-scroll */
-@media (max-width: 1400px) {
-    .promo-grid {
-        grid-template-columns: repeat(4, 1fr);
-        gap: 0.5rem;
-    }
-    .ad-card {
-        min-height: 200px;
-    }
-    .ad-content h2 {
-        font-size: 1.2rem;
-    }
+/* Forced Responsive No-Scroll */
+@media (max-width: 1200px) {
+    .promo-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+    .ad-content h2 { font-size: 1.2rem; }
 }
 
-@media (max-width: 768px) {
-    header h1 {
-        font-size: 1.5rem;
-    }
-
-    header p {
-        display: none;
-    }
-
-    .promo-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.5rem;
-        padding: 0.5rem;
-    }
-
-    .ad-card {
-        min-height: 120px;
-    }
-
-    .ad-content p {
-        display: none;
-    }
-
-    .btn-action {
-        padding: 0.2rem 0.5rem;
-        font-size: 0.7rem;
-        margin-top: 0.25rem;
-    }
+@media (max-width: 600px) {
+    header h1 { font-size: 1.8rem; }
+    .promo-grid { gap: 0.75rem; padding: 0.5rem; }
+    .ad-content { padding: 1rem; }
+    .ad-content p { display: none; }
 }
