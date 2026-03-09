@@ -270,7 +270,14 @@ header p {
 /* Responsive Design */
 @media (max-width: 1400px) {
     .promo-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.5rem;
+    }
+    .ad-card {
+        min-height: 200px;
+    }
+    .ad-content h2 {
+        font-size: 1.2rem;
     }
 }
 
