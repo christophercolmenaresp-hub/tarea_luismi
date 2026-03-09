@@ -12,6 +12,18 @@ const DATOS_QUIZ = {
                 lineaError: 3,
                 explicacion: 'En Java, todas las sentencias deben terminar con un punto y coma (;).',
                 pista: 'Falta un terminador de sentencia en la línea donde imprimes el mensaje.'
+            },
+            {
+                codigo: `int x = 10;\nif (x = 20) {\n    System.out.println("Es veinte");\n}`,
+                lineaError: 2,
+                explicacion: 'Usaste un operador de asignación (=) en lugar de comparación (==).',
+                pista: '¿Estás comparando el valor o asignándolo?'
+            },
+            {
+                codigo: `public void test() {\n    String s;\n    System.out.println(s.length());\n}`,
+                lineaError: 3,
+                explicacion: 'La variable "s" no ha sido inicializada antes de su uso.',
+                pista: '¿Tiene algún valor la variable "s" antes de pedir su longitud?'
             }
         ]
     },
@@ -23,6 +35,18 @@ const DATOS_QUIZ = {
                 lineaError: 2,
                 explicacion: 'En Python, la identación es obligatoria para definir bloques de código.',
                 pista: 'Revisa el espacio antes de la función print.'
+            },
+            {
+                codigo: `lista = [1, 2, 3]\nprint(lista[3])`,
+                lineaError: 2,
+                explicacion: 'El índice 3 está fuera de los límites de la lista (Out of range).',
+                pista: 'Las listas en Python empiezan en el índice 0.'
+            },
+            {
+                codigo: `for i in range(5)\n    print(i)`,
+                lineaError: 1,
+                explicacion: 'Falta el símbolo de dos puntos (:) al final de la sentencia for.',
+                pista: '¿Cómo se marcan el inicio de los bloques en Python?'
             }
         ]
     },
@@ -34,6 +58,18 @@ const DATOS_QUIZ = {
                 lineaError: 6,
                 explicacion: 'Estás intentando desreferenciar un puntero nulo (nullptr).',
                 pista: '¿Hacia dónde apunta "p" antes de asignar un valor?'
+            },
+            {
+                codigo: `int main() {\n    int arr[5];\n    arr[5] = 100;\n    return 0;\n}`,
+                lineaError: 3,
+                explicacion: 'Acceso fuera de los límites del array (Index out of bounds).',
+                pista: 'Si el tamaño es 5, ¿cuál es el último índice válido?'
+            },
+            {
+                codigo: `#include <iostream>\n\nint main() {\n    std::cout << "Hola" << std::endl\n    return 0;\n}`,
+                lineaError: 4,
+                explicacion: 'Falta el punto y coma (;) al final de la instrucción de salida.',
+                pista: 'Revisa el final de la línea del cout.'
             }
         ]
     },
@@ -45,6 +81,18 @@ const DATOS_QUIZ = {
                 lineaError: 2,
                 explicacion: 'Las variables declaradas con "const" no pueden ser reasignadas.',
                 pista: '¿Qué tipo de declaración impide la reasignación total?'
+            },
+            {
+                codigo: `function test() {\n    console.log(valor);\n    let valor = 10;\n}`,
+                lineaError: 2,
+                explicacion: 'No puedes acceder a una variable "let" antes de su declaración (Temporal Dead Zone).',
+                pista: 'El orden de ejecución importa con let.'
+            },
+            {
+                codigo: `const suma = (a, b) => a + b\nconsole.log(suma(5))`,
+                lineaError: 2,
+                explicacion: 'Llamaste a la función con menos argumentos de los requeridos (b será undefined).',
+                pista: 'La función espera dos números, pero solo pasaste uno.'
             }
         ]
     }
@@ -182,15 +230,39 @@ class MotorQuiz {
     }
 
     mostrarPantallaFinal() {
+        const porcentaje = Math.round((this.puntuacion / (this.datos.niveles.length * 100)) * 100);
+        let mensaje = '';
+        let emoji = '';
+        
+        if (porcentaje === 100) {
+            mensaje = '¡Eres un auténtico Master! Dominio total.';
+            emoji = '👑';
+        } else if (porcentaje >= 70) {
+            mensaje = '¡Muy buen trabajo! Tienes bases sólidas.';
+            emoji = '⭐';
+        } else {
+            mensaje = '¡Sigue practicando! El código se domina con tiempo.';
+            emoji = '📚';
+        }
+
         this.contenedor.innerHTML = `
-            <div class="contenedor-quiz" style="text-align: center; padding: 4rem 2rem;">
-                <div style="font-size: 5rem; color: var(--color-esmeralda); margin-bottom: 2rem;">🏆</div>
-                <h2 style="font-size: 3rem; font-weight: 900; margin-bottom: 1rem;">¡Desafío Completado!</h2>
-                <p style="color: var(--color-slate-500); font-size: 1.1rem; margin-bottom: 3rem;">Has demostrado tus habilidades en ${this.datos.titulo}.</p>
-                <div style="font-size: 5rem; font-weight: 900; color: var(--color-azul-brillante); margin-bottom: 4rem;">
-                    ${this.puntuacion} <span style="font-size: 1.5rem; color: var(--color-slate-500);">PTS</span>
+            <div class="contenedor-quiz" style="text-align: center; padding: 3rem 2rem; animation: fadeIn 0.8s ease-out;">
+                <div style="font-size: 6rem; margin-bottom: 2rem; filter: drop-shadow(0 0 20px rgba(255,255,255,0.2));">${emoji}</div>
+                <h2 style="font-size: 3.5rem; font-weight: 900; margin-bottom: 1rem; color: white;">${this.datos.titulo} Completado</h2>
+                <p style="color: var(--color-slate-400); font-size: 1.25rem; margin-bottom: 3rem; max-width: 600px; margin-left: auto; margin-right: auto;">${mensaje}</p>
+                
+                <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 2rem; padding: 2.5rem; display: inline-block; margin-bottom: 3rem; min-width: 300px;">
+                    <div style="font-size: 1rem; color: var(--color-slate-500); font-weight: 800; letter-spacing: 0.2rem; margin-bottom: 0.5rem; text-transform: uppercase;">Puntuación Final</div>
+                    <div style="font-size: 4.5rem; font-weight: 900; color: var(--color-azul-brillante); line-height: 1;">
+                        ${this.puntuacion}
+                    </div>
+                    <div style="margin-top: 1rem; color: var(--color-slate-400); font-weight: 600;">Precisión: ${porcentaje}%</div>
                 </div>
-                <button class="boton-principal" onclick="window.location.href='quiz.html'">Volver al menú</button>
+
+                <div style="display: flex; gap: 1.5rem; justify-content: center;">
+                    <button class="boton-principal" onclick="window.location.reload()" style="padding: 1rem 2.5rem;">Reintentar</button>
+                    <button class="boton-secundario" onclick="window.location.href='quiz.html'" style="padding: 1rem 2.5rem;">Volver al menú</button>
+                </div>
             </div>
         `;
     }

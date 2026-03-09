@@ -1,9 +1,5 @@
-// DevPulse App Logic
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('DevPulse initialized 🚀');
-
-    const postsContainer = document.getElementById('posts-container');
-    const navItems = document.querySelectorAll('.nav-item');
+    const postTextArea = document.querySelector('textarea');
+    const publishBtn = document.querySelector('button[style*="var(--color-primary)"]');
 
     // Sample Data
     const posts = [
@@ -26,13 +22,22 @@ document.addEventListener('DOMContentLoaded', () => {
             title: '¿Cómo optimizar el renderizado de listas en Vanilla JS?',
             status: 'Pregunta Resuelta',
             stats: { comments: 28, likes: 156, saves: 4 }
+        },
+        {
+            id: 3,
+            author: 'Iván Rodriguez',
+            handle: '@ivan_ui',
+            time: '6h',
+            content: 'Integrando el sistema de diseño glassmorphism en el feed principal. El desenfoque de fondo dinámico le da un toque premium brutal. ✨',
+            type: 'social',
+            stats: { comments: 8, shares: 2, likes: 31 }
         }
     ];
 
     // Render Posts
-    function renderPosts(filter = 'all') {
+    function renderPosts() {
         postsContainer.innerHTML = '';
-        posts.forEach(post => {
+        posts.sort((a,b) => b.id - a.id).forEach(post => {
             const article = document.createElement('article');
             article.className = 'post';
 
@@ -57,26 +62,50 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 ${postBody}
                 <div class="post-actions">
-                    <span>💬 ${post.stats.comments}</span>
-                    <span>${post.type === 'qa' ? '❤️' : '🔁'} ${post.type === 'qa' ? post.stats.likes : post.stats.shares}</span>
-                    <span>${post.type === 'qa' ? '📚' : '❤️'} ${post.type === 'qa' ? post.stats.saves : post.stats.likes}</span>
+                    <span class="action-btn" onclick="this.style.color='var(--color-primary)'">💬 ${post.stats.comments}</span>
+                    <span class="action-btn" onclick="this.style.color='var(--color-secondary)'">🔁 ${post.stats.shares || 0}</span>
+                    <span class="action-btn" onclick="this.classList.toggle('liked')">❤️ ${post.stats.likes}</span>
                 </div>
             `;
             postsContainer.appendChild(article);
         });
     }
 
+    // Publish logic
+    if (publishBtn) {
+        publishBtn.onclick = () => {
+            const content = postTextArea.value.trim();
+            if (!content) return;
+
+            const newPost = {
+                id: Date.now(),
+                author: 'Invitado',
+                handle: '@invitado',
+                time: 'ahora',
+                content: content,
+                type: 'social',
+                stats: { comments: 0, shares: 0, likes: 0 }
+            };
+
+            posts.push(newPost);
+            postTextArea.value = '';
+            renderPosts();
+            
+            // Subtle animation feedback
+            publishBtn.style.transform = 'scale(0.9)';
+            setTimeout(() => publishBtn.style.transform = 'scale(1)', 100);
+        };
+    }
+
     // Navigation logic
     navItems.forEach(item => {
         item.addEventListener('click', (e) => {
-            if (item.getAttribute('href') !== '#') return;
+            const href = item.getAttribute('href');
+            if (href && href !== '#') return;
+            
             e.preventDefault();
-            navItems.forEach(i => i.classList.remove('active'));
-            item.classList.add('active active-glow');
-
-            // Simulation of filtering
-            const community = item.innerText.toLowerCase().trim();
-            console.log(`Filtrando por: ${community}`);
+            navItems.forEach(i => i.classList.remove('active', 'active-glow'));
+            item.classList.add('active', 'active-glow');
         });
     });
 
@@ -90,6 +119,9 @@ document.addEventListener('DOMContentLoaded', () => {
             box-shadow: 0 0 15px var(--color-primary-glow);
             transition: box-shadow 0.3s ease;
         }
+        .action-btn { cursor: pointer; transition: 0.2s; padding: 4px 8px; border-radius: 4px; }
+        .action-btn:hover { background: rgba(255,255,255,0.05); }
+        .liked { color: #f91880 !important; font-weight: bold; text-shadow: 0 0 10px rgba(249, 24, 128, 0.3); }
     `;
     document.head.appendChild(style);
 });
