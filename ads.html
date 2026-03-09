@@ -79,6 +79,21 @@
     <footer style="text-align: center; padding: 1rem; opacity: 0.5; font-size: 0.8rem;">
         <p>&copy; 2026 DevPulse Advertising Network.</p>
     </footer>
+
+    <script>
+        // Nuclear option to prevent any scroll with mouse wheel or touch
+        const preventScroll = (e) => {
+            if (e.ctrlKey) return; // Allow zooming
+            e.preventDefault();
+        };
+        
+        window.addEventListener('wheel', preventScroll, { passive: false });
+        window.addEventListener('touchmove', preventScroll, { passive: false });
+        
+        // Ensure the layout remains static even if the user finds a way
+        document.documentElement.style.overflow = 'hidden';
+        document.body.style.overflow = 'hidden';
+    </script>
 </body>
 
 </html>
