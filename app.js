@@ -1,127 +1,145 @@
-    const postTextArea = document.querySelector('textarea');
-    const publishBtn = document.querySelector('button[style*="var(--color-primary)"]');
+// Lógica de la App DevPulse
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('DevPulse inicializado 🚀');
 
-    // Sample Data
-    const posts = [
+    const contenedorPublicaciones = document.getElementById('contenedor-publicaciones');
+    const itemsNav = document.querySelectorAll('.item-nav');
+    const areaTextoPublicacion = document.querySelector('textarea');
+    const botonPublicar = document.querySelector('button[style*="var(--color-primary)"]');
+
+    // Datos de Muestra
+    const publicaciones = [
         {
             id: 1,
-            author: 'Juan Reis',
-            handle: '@jreis',
-            time: '2h',
-            content: 'Acabo de terminar la lógica de los hilos de respuesta para DevPulse. ¡La interacción va a ser súper fluida! 🚀 #DevPulse #WebDev',
-            type: 'social',
-            stats: { comments: 12, shares: 5, likes: 42 }
+            autor: 'Juan Reis',
+            arroba: '@jreis',
+            tiempo: '2h',
+            contenido: 'Acabo de terminar la lógica de los hilos de respuesta para DevPulse. ¡La interacción va a ser súper fluida! 🚀 #DevPulse #WebDev',
+            tipo: 'social',
+            estadisticas: { comentarios: 12, compartidos: 5, me_gusta: 42 }
         },
         {
             id: 2,
-            author: 'Christopher',
-            handle: '@chris_master',
-            time: '4h',
-            content: '¿Cómo optimizar el renderizado de listas en Vanilla JS? He encontrado que usando un fragmento de documento (DocumentFragment) antes de añadir al DOM mejora el rendimiento un 40%.',
-            type: 'qa',
-            title: '¿Cómo optimizar el renderizado de listas en Vanilla JS?',
-            status: 'Pregunta Resuelta',
-            stats: { comments: 28, likes: 156, saves: 4 }
+            autor: 'Christopher',
+            arroba: '@chris_master',
+            tiempo: '4h',
+            contenido: '¿Cómo optimizar el renderizado de listas en Vanilla JS? He encontrado que usando un fragmento de documento (DocumentFragment) antes de añadir al DOM mejora el rendimiento un 40%.',
+            tipo: 'qa',
+            titulo: '¿Cómo optimizar el renderizado de listas en Vanilla JS?',
+            estado: 'Pregunta Resuelta',
+            estadisticas: { comentarios: 28, me_gusta: 156, guardados: 4 }
         },
         {
             id: 3,
-            author: 'Iván Rodriguez',
-            handle: '@ivan_ui',
-            time: '6h',
-            content: 'Integrando el sistema de diseño glassmorphism en el feed principal. El desenfoque de fondo dinámico le da un toque premium brutal. ✨',
-            type: 'social',
-            stats: { comments: 8, shares: 2, likes: 31 }
+            autor: 'Iván Rodriguez',
+            arroba: '@ivan_ui',
+            tiempo: '6h',
+            contenido: 'Integrando el sistema de diseño glassmorphism en el feed principal. El desenfoque de fondo dinámico le da un toque premium brutal. ✨',
+            tipo: 'social',
+            estadisticas: { comentarios: 8, compartidos: 2, me_gusta: 31 }
         }
     ];
 
-    // Render Posts
-    function renderPosts() {
-        postsContainer.innerHTML = '';
-        posts.sort((a,b) => b.id - a.id).forEach(post => {
-            const article = document.createElement('article');
-            article.className = 'post';
+    // Mostrar Publicaciones
+    function mostrarPublicaciones() {
+        if (!contenedorPublicaciones) return;
+        contenedorPublicaciones.innerHTML = '';
+        
+        // Ordenar por ID descendente (más nuevos primero)
+        [...publicaciones].sort((a, b) => b.id - a.id).forEach(publicacion => {
+            const articulo = document.createElement('article');
+            articulo.className = 'publicacion';
 
-            let postBody = '';
-            if (post.type === 'qa') {
-                postBody = `
-                    <div class="solve-badge">✓ ${post.status}</div>
-                    <h3 style="margin: 0.5rem 0; font-size: 1.1rem;">${post.title}</h3>
-                    <p>${post.content}</p>
+            let cuerpoPublicacion = '';
+            if (publicacion.tipo === 'qa') {
+                cuerpoPublicacion = `
+                    <div class="insignia-resuelto">✓ ${publicacion.estado}</div>
+                    <h3 style="margin: 0.5rem 0; font-size: 1.1rem;">${publicacion.titulo}</h3>
+                    <p>${publicacion.contenido}</p>
                 `;
             } else {
-                postBody = `<div class="post-content">${post.content}</div>`;
+                cuerpoPublicacion = `<div class="contenido-publicacion">${publicacion.contenido}</div>`;
             }
 
-            article.innerHTML = `
-                <div class="post-header">
+            articulo.innerHTML = `
+                <div class="cabecera-publicacion">
                     <div class="avatar"></div>
                     <div>
-                        <span class="post-author">${post.author}</span>
-                        <span class="post-handle">${post.handle} · ${post.time}</span>
+                        <span class="autor-publicacion">${publicacion.autor}</span>
+                        <span class="arroba-publicacion">${publicacion.arroba} · ${publicacion.tiempo}</span>
                     </div>
                 </div>
-                ${postBody}
-                <div class="post-actions">
-                    <span class="action-btn" onclick="this.style.color='var(--color-primary)'">💬 ${post.stats.comments}</span>
-                    <span class="action-btn" onclick="this.style.color='var(--color-secondary)'">🔁 ${post.stats.shares || 0}</span>
-                    <span class="action-btn" onclick="this.classList.toggle('liked')">❤️ ${post.stats.likes}</span>
+                ${cuerpoPublicacion}
+                <div class="acciones-publicacion">
+                    <span class="boton-accion" onclick="this.style.color='var(--color-primary)'">💬 ${publicacion.estadisticas.comentarios}</span>
+                    <span class="boton-accion" onclick="this.style.color='var(--color-secondary)'">
+                        ${publicacion.tipo === 'qa' ? (publicacion.estadisticas.me_gusta) : ('🔁 ' + (publicacion.estadisticas.compartidos || 0))}
+                    </span>
+                    <span class="boton-accion" onclick="this.classList.toggle('gustado')">
+                        ${publicacion.tipo === 'qa' ? ('📚 ' + publicacion.estadisticas.guardados) : ('❤️ ' + publicacion.estadisticas.me_gusta)}
+                    </span>
                 </div>
             `;
-            postsContainer.appendChild(article);
+            contenedorPublicaciones.appendChild(articulo);
         });
     }
 
-    // Publish logic
-    if (publishBtn) {
-        publishBtn.onclick = () => {
-            const content = postTextArea.value.trim();
-            if (!content) return;
+    // Lógica de publicación
+    if (botonPublicar) {
+        botonPublicar.onclick = () => {
+            const contenido = areaTextoPublicacion.value.trim();
+            if (!contenido) return;
 
-            const newPost = {
+            const nuevaPublicacion = {
                 id: Date.now(),
-                author: 'Invitado',
-                handle: '@invitado',
-                time: 'ahora',
-                content: content,
-                type: 'social',
-                stats: { comments: 0, shares: 0, likes: 0 }
+                autor: 'Invitado',
+                arroba: '@invitado',
+                tiempo: 'ahora',
+                contenido: contenido,
+                tipo: 'social',
+                estadisticas: { comentarios: 0, compartidos: 0, me_gusta: 0 }
             };
 
-            posts.push(newPost);
-            postTextArea.value = '';
-            renderPosts();
+            publicaciones.push(nuevaPublicacion);
+            areaTextoPublicacion.value = '';
+            mostrarPublicaciones();
             
-            // Subtle animation feedback
-            publishBtn.style.transform = 'scale(0.9)';
-            setTimeout(() => publishBtn.style.transform = 'scale(1)', 100);
+            // Feedback sutil de animación
+            botonPublicar.style.transform = 'scale(0.9)';
+            setTimeout(() => botonPublicar.style.transform = 'scale(1)', 100);
         };
     }
 
-    // Navigation logic
-    navItems.forEach(item => {
+    // Lógica de navegación
+    itemsNav.forEach(item => {
         item.addEventListener('click', (e) => {
-            const href = item.getAttribute('href');
-            if (href && href !== '#') return;
+            const destino = item.getAttribute('href');
+            if (destino && destino !== '#') return;
             
             e.preventDefault();
-            navItems.forEach(i => i.classList.remove('active', 'active-glow'));
-            item.classList.add('active', 'active-glow');
+            itemsNav.forEach(i => i.classList.remove('activo'));
+            item.classList.add('activo', 'brillo-activo');
+
+            // Simulación de filtrado
+            const comunidad = item.innerText.toLowerCase().trim();
+            console.log(`Filtrando por: ${comunidad}`);
         });
     });
 
-    // Initial render
-    renderPosts();
+    // Renderizado inicial
+    mostrarPublicaciones();
 
-    // Pulse effect on active items
-    const style = document.createElement('style');
-    style.innerHTML = `
-        .active-glow {
+    // Efecto de pulso en elementos activos
+    const estilo = document.createElement('style');
+    estilo.innerHTML = `
+        .brillo-activo {
             box-shadow: 0 0 15px var(--color-primary-glow);
             transition: box-shadow 0.3s ease;
         }
-        .action-btn { cursor: pointer; transition: 0.2s; padding: 4px 8px; border-radius: 4px; }
-        .action-btn:hover { background: rgba(255,255,255,0.05); }
-        .liked { color: #f91880 !important; font-weight: bold; text-shadow: 0 0 10px rgba(249, 24, 128, 0.3); }
+        .boton-accion { cursor: pointer; transition: 0.2s; padding: 4px 8px; border-radius: 4px; }
+        .boton-accion:hover { background: rgba(255,255,255,0.05); }
+        .gustado { color: #f91880 !important; font-weight: bold; text-shadow: 0 0 10px rgba(249, 24, 128, 0.3); }
     `;
-    document.head.appendChild(style);
+    document.head.appendChild(estilo);
 });
+

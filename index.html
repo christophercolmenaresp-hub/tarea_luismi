@@ -13,46 +13,46 @@
 </head>
 
 <body>
-    <div class="app-container">
+    <div class="contenedor-app">
         <!-- Sidebar: Reddit Style Navigation -->
-        <aside class="sidebar glass-panel">
+        <aside class="barra-lateral panel-cristal">
             <h1>DevPulse</h1>
 
             <nav>
-                <a href="#" class="nav-item active">
+                <a href="#" class="item-nav activo">
                     <i>🏠</i> Inicio
                 </a>
-                <a href="#" class="nav-item">
+                <a href="#" class="item-nav">
                     <i>🔥</i> Tendencias
                 </a>
-                <a href="ads.html" class="nav-item">
+                <a href="ads.html" class="item-nav">
                     <i>📢</i> Anuncios (Monetización)
                 </a>
-                <a href="quiz.html" class="nav-item">
+                <a href="quiz.html" class="item-nav">
                     <i>🎮</i> Desafío DevPulse (Quiz)
                 </a>
             </nav>
 
             <div style="margin-top: 2rem;">
-                <p class="section-title">Comunidades</p>
-                <a href="#" class="nav-item">r/javascript</a>
-                <a href="#" class="nav-item">r/webdev</a>
-                <a href="#" class="nav-item">r/showcase</a>
-                <a href="#" class="nav-item">r/career_advice</a>
+                <p class="titulo-seccion">Comunidades</p>
+                <a href="#" class="item-nav">r/javascript</a>
+                <a href="#" class="item-nav">r/webdev</a>
+                <a href="#" class="item-nav">r/showcase</a>
+                <a href="#" class="item-nav">r/career_advice</a>
             </div>
         </aside>
 
         <!-- Main Feed: Twitter Style -->
-        <main class="main-feed">
-            <header class="glass-panel"
+        <main class="feed-principal">
+            <header class="panel-cristal"
                 style="position: sticky; top: 0; z-index: 10; border-top: none; display: flex; justify-content: space-between; align-items: center;">
                 <h2 style="font-size: 1.25rem;">Inicio</h2>
-                <div class="user-info" style="font-size: 0.8rem; color: var(--color-text-dim);">Conectado como @invitado
+                <div class="info-usuario" style="font-size: 0.8rem; color: var(--color-text-dim);">Conectado como @invitado
                 </div>
             </header>
 
             <!-- Create Post Area -->
-            <div class="glass-panel"
+            <div class="panel-cristal"
                 style="border-right: none; padding: 1.5rem; border-bottom: 1px solid var(--color-border);">
                 <div style="display: flex; gap: 1rem;">
                     <div class="avatar"></div>
@@ -77,21 +77,21 @@
                 </div>
             </div>
 
-            <div id="posts-container">
+            <div id="contenedor-publicaciones">
                 <!-- Sample Post 1 (Twitter Style) -->
-                <article class="post">
-                    <div class="post-header">
+                <article class="publicacion">
+                    <div class="cabecera-publicacion">
                         <div class="avatar"></div>
                         <div>
-                            <span class="post-author">Juan Reis</span>
-                            <span class="post-handle">@jreis · 2h</span>
+                            <span class="autor-publicacion">Juan Reis</span>
+                            <span class="arroba-publicacion">@jreis · 2h</span>
                         </div>
                     </div>
-                    <div class="post-content">
+                    <div class="contenido-publicacion">
                         Acabo de terminar la lógica de los hilos de respuesta para DevPulse. ¡La interacción va a ser
                         súper fluida! 🚀 #DevPulse #WebDev
                     </div>
-                    <div class="post-actions">
+                    <div class="acciones-publicacion">
                         <span>💬 12</span>
                         <span>🔁 5</span>
                         <span>❤️ 42</span>
@@ -99,22 +99,22 @@
                 </article>
 
                 <!-- Sample Post 2 (StackOverflow Style) -->
-                <article class="post">
-                    <div class="post-header">
+                <article class="publicacion">
+                    <div class="cabecera-publicacion">
                         <div class="avatar"></div>
                         <div>
-                            <span class="post-author">Christopher</span>
-                            <span class="post-handle">@chris_master · 4h</span>
+                            <span class="autor-publicacion">Christopher</span>
+                            <span class="arroba-publicacion">@chris_master · 4h</span>
                         </div>
                     </div>
-                    <div class="post-content">
-                        <div class="solve-badge">✓ Pregunta Resuelta</div>
+                    <div class="contenido-publicacion">
+                        <div class="insignia-resuelto">✓ Pregunta Resuelta</div>
                         <h3 style="margin: 0.5rem 0; font-size: 1.1rem;">¿Cómo optimizar el renderizado de listas en
                             Vanilla JS?</h3>
                         He encontrado que usando un fragmento de documento (DocumentFragment) antes de añadir al DOM
                         mejora el rendimiento un 40%. ¿Alguien tiene otra alternativa?
                     </div>
-                    <div class="post-actions">
+                    <div class="acciones-publicacion">
                         <span>💬 28</span>
                         <span>❤️ 156</span>
                         <span>📚 4</span>
@@ -124,9 +124,9 @@
         </main>
 
         <!-- Widgets/Stats: StackOverflow Style -->
-        <aside class="widgets-panel glass-panel">
-            <div class="card">
-                <p class="section-title">Top Solucionadores</p>
+        <aside class="panel-widgets panel-cristal">
+            <div class="tarjeta">
+                <p class="titulo-seccion">Top Solucionadores</p>
                 <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem;">
                     <div style="display: flex; align-items: center; justify-content: space-between;">
                         <span>Ivan Rodriguez</span>
@@ -139,8 +139,8 @@
                 </div>
             </div>
 
-            <div class="card">
-                <p class="section-title">Tendencias para ti</p>
+            <div class="tarjeta">
+                <p class="titulo-seccion">Tendencias para ti</p>
                 <div style="margin-top: 1rem;">
                     <p style="font-weight: 700;">#VanillaJS</p>
                     <p style="color: var(--color-text-dim); font-size: 0.8rem;">5.2k posts</p>
