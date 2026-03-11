@@ -4,17 +4,27 @@
 */
 
 /* Variables globales de color y diseño */
+/* Variables globales de color y diseño - Sincronizadas con DevPulse */
 :root {
-    --color-fondo: #ffffff;
-    --color-slate-900: #0f172a;
-    --color-slate-800: #1e293b;
-    --color-slate-700: #334155;
-    --color-slate-500: #64748b;
-    --color-azul: #3b82f6;
+    --color-bg: #030712;
+    --color-surface: #111827;
+    --color-surface-soft: #1f2937;
+    --color-primary: #3b82f6;
+    --color-primary-glow: rgba(59, 130, 246, 0.5);
+    --color-secondary: #ff4500;
+    --color-accent: #f48024;
+    --color-text-main: #f9fafb;
+    --color-text-dim: #9ca3af;
+    --color-glass: rgba(255, 255, 255, 0.03);
+    --color-border: rgba(255, 255, 255, 0.1);
+    
+    --color-azul: var(--color-primary);
     --color-azul-brillante: #60a5fa;
     --color-morado: #a78bfa;
     --color-esmeralda: #10b981;
     --color-rojo: #ef4444;
+    
+    --font-main: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
 /* Reset básico */
@@ -25,28 +35,23 @@
 }
 
 body {
-    /*Color fondo de las letras*/
-    background-color: var(--color-fondo);
-    color: #fafafa;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    background-color: var(--color-bg);
+    color: var(--color-text-main);
+    font-family: var(--font-main);
+    line-height: 1.6;
     min-height: 100vh;
     overflow-x: hidden;
 }
 
 /* --- UTILIDADES DE DISEÑO --- */
 
-.flex {
-    display: flex;
-}
-
-.col {
-    flex-direction: column;
-}
-
-.centro {
-    justify-content: center;
-    align-items: center;
-}
+.flex { display: flex; }
+.col { flex-direction: column; }
+.centro { justify-content: center; align-items: center; }
+.entre { justify-content: space-between; }
+.gap-2 { gap: 0.5rem; }
+.gap-4 { gap: 1rem; }
+.gap-6 { gap: 1.5rem; }
 
 .entre {
     justify-content: space-between;
@@ -75,6 +80,8 @@ body {
 
 /* --- COMPONENTES VISUALES --- */
 
+/* --- COMPONENTES VISUALES --- */
+
 .fondo-gradiente {
     min-height: 100vh;
     display: flex;
@@ -82,7 +89,7 @@ body {
     align-items: center;
     justify-content: center;
     padding: 2rem;
-    background: radial-gradient(ellipse at top, #6b1b1b, #000000, #000);
+    background: radial-gradient(circle at top, #111827, #030712);
 }
 
 .contenedor-principal {
@@ -92,35 +99,38 @@ body {
 }
 
 .texto-degradado {
-    background: linear-gradient(to right, var(--color-azul-brillante), var(--color-morado));
+    background: linear-gradient(135deg, #fff, var(--color-primary));
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    font-weight: 900;
+    font-weight: 800;
 }
 
-.cristal {
-    background: rgba(15, 23, 42, 0.65);
+.panel-cristal {
+    background: var(--color-glass);
     backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--color-border);
+    border-radius: 1.5rem;
+    padding: 2rem;
 }
 
 .tarjeta-cristal {
-    background: rgba(30, 41, 59, 0.4);
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: var(--color-glass);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--color-border);
     border-radius: 1.5rem;
     padding: 2rem;
     text-align: center;
     text-decoration: none;
     color: inherit;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .tarjeta-cristal:hover {
     transform: translateY(-5px);
-    border-color: rgba(255, 255, 255, 0.15);
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+    border-color: var(--color-primary);
+    background: rgba(59, 130, 246, 0.05);
 }
 
 /* --- ESTILOS DEL QUIZ --- */
@@ -148,22 +158,21 @@ body {
 .puntuacion-caja {
     padding: 0.75rem 1.5rem;
     border-radius: 1rem;
-    border: 1px solid rgba(59, 130, 246, 0.3);
-    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
 }
 
 .editor-ventana {
     border-radius: 1.5rem;
     overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    background: rgba(2, 6, 23, 0.6);
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
 }
 
 .editor-barra {
-    background: rgba(30, 41, 59, 0.8);
+    background: var(--color-surface-soft);
     padding: 1rem 2rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid var(--color-border);
 }
 
 .editor-codigo {
