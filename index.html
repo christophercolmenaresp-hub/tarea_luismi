@@ -13,7 +13,6 @@
         <!-- Sidebar: Reddit Style Navigation -->
         <aside class="barra-lateral panel-cristal">
             <h1>DevPulse</h1>
-
             <nav>
                 <a href="#" class="item-nav activo">
                     <i>🏠</i> Inicio
@@ -37,88 +36,133 @@
                 <a href="#" class="item-nav">r/career_advice</a>
             </div>
         </aside>
+<!--Inicio de comentarios-->
 
-        <!-- Main Feed: Twitter Style -->
-        <main class="feed-principal">
-            <header class="panel-cristal"
-                style="position: sticky; top: 0; z-index: 10; border-top: none; display: flex; justify-content: space-between; align-items: center;">
-                <h2 style="font-size: 1.25rem;">Inicio</h2>
-                <div class="info-usuario" style="font-size: 0.8rem; color: var(--color-text-dim);">Conectado como
-                    @invitado
-                </div>
-            </header>
+         <main class="main-layout">
 
-            <!-- Create Post Area -->
-            <div class="panel-cristal"
-                style="border-right: none; padding: 1.5rem; border-bottom: 1px solid var(--color-border);">
-                <div style="display: flex; gap: 1rem;">
-                    <div class="avatar"></div>
-                    <div style="flex: 1;">
-                        <textarea placeholder="¿En qué estás trabajando hoy?"
-                            style="width: 100%; background: transparent; border: none; color: white; font-size: 1.25rem; font-family: inherit; resize: none; outline: none; margin-bottom: 1rem;"
-                            rows="2"></textarea>
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <div style="display: flex; gap: 1rem; color: var(--color-primary);">
-                                <span style="cursor: pointer;">🖼️</span>
-                                <span style="cursor: pointer;">📊</span>
-                                <span style="cursor: pointer;">❓</span>
-                            </div>
-                            <button
-                                style="background: var(--color-primary); color: white; border: none; padding: 0.6rem 1.5rem; border-radius: 2rem; font-weight: 700; cursor: pointer; transition: transform 0.1s;"
-                                onmousedown="this.style.transform='scale(0.95)'"
-                                onmouseup="this.style.transform='scale(1)'">
-                                Publicar
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <section class="composer-section">
+      <div class="composer-card">
+        
+        <div class="composer-header">
+          <div class="composer-prompt">¿Qué tienes en mente?</div>
+          <select id="languageSelect" class="language-select" title="Elige el lenguaje de tu código">
+            <option value="markup">Texto / HTML</option>
+            <option value="javascript">JavaScript</option>
+            <option value="css">CSS</option>
+            <option value="python">Python</option>
+            <option value="java">Java</option>
+            <option value="cpp">C++</option>
+            <option value="sql">SQL</option>
+          </select>
+        </div>
 
-            <div id="contenedor-publicaciones">
-                <!-- Sample Post 1 (Twitter Style) -->
-                <article class="publicacion">
-                    <div class="cabecera-publicacion">
-                        <div class="avatar"></div>
-                        <div>
-                            <span class="autor-publicacion">Juan Reis</span>
-                            <span class="arroba-publicacion">@jreis · 2h</span>
-                        </div>
-                    </div>
-                    <div class="contenido-publicacion">
-                        Acabo de terminar la lógica de los hilos de respuesta para DevPulse. ¡La interacción va a ser
-                        súper fluida! 🚀 #DevPulse #WebDev
-                    </div>
-                    <div class="acciones-publicacion">
-                        <span>💬 12</span>
-                        <span>🔁 5</span>
-                        <span>❤️ 42</span>
-                    </div>
-                </article>
+      <textarea
+  id="new-comment-text"
+  class="composer-textarea"
+  placeholder="Escribe tu mensaje o pega tu código aquí..."
+  rows="4"
+></textarea>
 
-                <!-- Sample Post 2 (StackOverflow Style) -->
-                <article class="publicacion">
-                    <div class="cabecera-publicacion">
-                        <div class="avatar"></div>
-                        <div>
-                            <span class="autor-publicacion">Christopher</span>
-                            <span class="arroba-publicacion">@chris_master · 4h</span>
-                        </div>
-                    </div>
-                    <div class="contenido-publicacion">
-                        <div class="insignia-resuelto">✓ Pregunta Resuelta</div>
-                        <h3 style="margin: 0.5rem 0; font-size: 1.1rem;">¿Cómo optimizar el renderizado de listas en
-                            Vanilla JS?</h3>
-                        He encontrado que usando un fragmento de documento (DocumentFragment) antes de añadir al DOM
-                        mejora el rendimiento un 40%. ¿Alguien tiene otra alternativa?
-                    </div>
-                    <div class="acciones-publicacion">
-                        <span>💬 28</span>
-                        <span>❤️ 156</span>
-                        <span>📚 4</span>
-                    </div>
-                </article>
-            </div>
-        </main>
+        <div class="preview-wrapper">
+          <span class="preview-label">Vista Previa</span>
+          <pre id="preview" class="code-preview"><code></code></pre>
+        </div>
+
+        <div class="composer-footer">
+          <span class="char-counter" id="char-counter">0 / 500</span>
+          <button class="btn-publish" id="publish-btn">Publicar</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="feed-section">
+      <div class="feed-header">
+        <h2 class="feed-title">Conversaciones</h2>
+        <div class="sort-controls">
+          <button class="sort-btn active" data-sort="newest">Recientes</button>
+          <button class="sort-btn" data-sort="oldest">Antiguos</button>
+          <button class="sort-btn" data-sort="popular">Populares</button>
+        </div>
+      </div>
+
+      <div id="comments-feed" class="comments-feed">
+        </div>
+
+      <div id="empty-state" class="empty-state hidden">
+        <div class="empty-icon">◌</div>
+        <p>La plaza está en silencio.<br>Sé el primero en hablar.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <div id="toast" class="toast" aria-live="polite"></div>
+
+  <template id="tpl-comment">
+    <article class="comment-card" data-id="">
+      <div class="comment-meta">
+        <div class="avatar"></div>
+        <div class="meta-info">
+          <span class="meta-author"></span>
+          <span class="meta-time"></span>
+        </div>
+        <button class="btn-delete" title="Eliminar">✕</button>
+      </div>
+      <div class="comment-body"></div>
+      <div class="comment-actions">
+        <button class="btn-like" title="Me gusta">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+          </svg>
+          <span class="like-count">0</span>
+        </button>
+        <button class="btn-reply">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 14 4 9 9 4"/>
+            <path d="M20 20v-7a4 4 0 0 0-4-4H4"/>
+          </svg>
+          Responder
+        </button>
+        <span class="reply-count"></span>
+      </div>
+
+      <div class="reply-composer hidden">
+        <textarea class="reply-textarea" placeholder="Escribe tu respuesta..." rows="2"></textarea>
+        <div class="reply-composer-footer">
+          <button class="btn-cancel-reply">Cancelar</button>
+          <button class="btn-submit-reply">Responder</button>
+        </div>
+      </div>
+
+      <div class="replies-container"></div>
+    </article>
+  </template>
+
+  <template id="tpl-reply">
+    <div class="reply-card" data-id="">
+      <div class="reply-thread-line"></div>
+      <div class="reply-content">
+        <div class="comment-meta">
+          <div class="avatar avatar--sm"></div>
+          <div class="meta-info">
+            <span class="meta-author"></span>
+            <span class="meta-time"></span>
+          </div>
+          <button class="btn-delete" title="Eliminar">✕</button>
+        </div>
+        <div class="comment-body"></div>
+        <div class="comment-actions">
+          <button class="btn-like" title="Me gusta">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+            <span class="like-count">0</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </template>
+        <!--Final COmentarios-->
 
         <!-- Widgets/Stats: StackOverflow Style -->
         <aside class="panel-widgets panel-cristal">
@@ -151,6 +195,8 @@
     </div>
 
     <script src="app.js"></script>
+    <script src="syntaxis.js"></script>
+
 </body>
 
 </html>
