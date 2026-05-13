@@ -83,3 +83,5 @@ document.addEventListener('DOMContentLoaded', () => {
     languageSelectId: 'languageSelect'
   });
 });
+
+console.log('SyntaxHighlighter initialized');
