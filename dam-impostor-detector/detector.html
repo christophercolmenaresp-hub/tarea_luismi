@@ -2,18 +2,45 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>DAM IMPOSTOR DETECTOR - REPARTO FINAL</title>
+    <title>DevPulse - Desafío IA</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <style>
+        .btn-home {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            color: #94a3b8;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.2s;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-home:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            transform: translateX(-5px);
+        }
+    </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-4">
+    <a href="../index.html" class="btn-home">← Volver a DevPulse</a>
     <div id="capa-interferencia" class="capa-glitch"></div>
     <div id="contenedor-principal" class="w-full max-w-4xl relative z-10">
         <!-- SELECCIÓN -->
         <div id="pantalla-seleccion" class="entrada-suave space-y-12">
             <div class="text-center space-y-4">
-                <h1 class="letra-espacial text-6xl font-bold tracking-tighter brillo-cian italic">DAM IMPOSTOR DETECTOR</h1>
+                <h1 class="letra-espacial text-6xl font-bold tracking-tighter brillo-cian italic">DevPulse IA Test</h1>
                 <p class="text-xl uppercase tracking-[0.3em] text-cyan-500 opacity-80">PROTOCOLO SKYNET: PURGA DE IMPOSTORES SINTÉTICOS</p>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
